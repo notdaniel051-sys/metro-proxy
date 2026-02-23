@@ -6,20 +6,24 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (platform) {
+    // If requesting platform list
+    if (!platform) {
       const response = await fetch(
-        `https://metro-rti.nexus.org.uk/api/times/${station}/${platform}`
-      );
-      const data = await response.json();
-      return res.status(200).json(data);
-    } else {
-      const response = await fetch(
-        `https://metro-rti.nexus.org.uk/api/stations/platforms`
+        "https://metro-rti.nexus.org.uk/api/stations/platforms"
       );
       const data = await response.json();
       return res.status(200).json(data);
     }
+
+    // If requesting train times
+    const response = await fetch(
+      `https://metro-rti.nexus.org.uk/api/times/${station}/${platform}`
+    );
+
+    const data = await response.json();
+    return res.status(200).json(data);
+
   } catch (error) {
-    return res.status(500).json({ error: "Failed to fetch Metro data" });
+    return res.status(500).json({ error: "Metro API fetch failed" });
   }
 }
